@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Complete Torrent Platform Database Schema",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/User"
+      }
+    },
+    "torrents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Torrent"
+      }
+    },
+    "comments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Comment"
+      }
+    }
+  },
+
+  "$defs": {
+    "User": {
+      "type": "object",
+      "required": ["_id", "username", "email", "passwordHash", "role", "createdAt"],
+      "properties": {
+        "_id": { "type": "string" },
+        "username": { "type": "string", "minLength": 3, "maxLength": 32 },
+        "email": { "type": "string", "format": "email" },
+        "passwordHash": { "type": "string" },
+        "role": { "type": "string", "enum": ["guest", "user", "moderator", "admin"] },
+        "banned": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+
+    "Torrent": {
+      "type": "object",
+      "required": [
+        "_id", "title", "description", "size",
+        "categories", "images", "uploaderId",
+        "uploadDate", "torrentFilePath"
+      ],
+      "properties": {
+        "_id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 160 },
+        "description": { "type": "string", "maxLength": 160 },
+        "size": { "type": "number" },
+        "categories": { "type": "array", "items": { "type": "string" } },
+        "images": { "type": "array", "items": { "type": "string" } },
+        "uploaderId": { "type": "string" },
+        "uploadDate": { "type": "string", "format": "date-time" },
+        "averageRating": { "type": "number", "minimum": 0, "maximum": 5 },
+        "downloadCount": { "type": "integer", "minimum": 0 },
+        "torrentFilePath": { "type": "string" }
+      }
+    },
+
+    "Comment": {
+      "type": "object",
+      "required": ["_id", "torrentId", "authorId", "rating", "text", "createdAt"],
+      "properties": {
+        "_id": { "type": "string" },
+        "torrentId": { "type": "string" },
+        "authorId": { "type": "string" },
+        "rating": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "text": { "type": "string", "maxLength": 160 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "editedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}
